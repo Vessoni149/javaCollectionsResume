@@ -1,0 +1,374 @@
+Una colección es un grupo dinámico de objetos.
+Analizando esta definición podemos ver que se compone de 3 partes. Por un lado decimos que es un "grupo", queriendo referir
+a que agrupa algo, al igual que los arrays. Pero se diferencia de éstos por las otras 2 características, que es "dinámico" y
+que agrupa "objetos". Con la primera referimos a que no tiene un tamaño determinado como los arrays, en los que se predefine
+cuantos elementos almacenará y si se quiere agregar mas se tiene que cambiar ese numero predefinido en su creación,
+las colecciones, en cambio, pueden tener tantos elementos como queramos.
+Respecto a los objetos pueden ser los que vienen en la api de java, y los que
+instanciemos nosotros sea de alguna clase creada por nosotros o por un tercero.
+Las colecciones no pueden almacenar tipos de dato primitivos como los arrays, para hacer algo similar hay que almacenar objetos
+equivalentes a los primitivos.
+Ej. para almacenar int usaríamos Integer, para double Double, long Long char Character y bolean Boolean. Por su parte los
+String ya son un objeto en sí, no un dato primitivo.
+
+Collections es un framework compuesto de Interfaces (I), clases abstractas (CA) y clases (CL). Es muy amplio pero nos
+centraremos en las Interfaces y Clases más usadas.
+Las interfaces más importantes que heredan de Collection son: List, Queue y Set. Por otro lado tenemos a la I Map que no
+hereda de Collection pero también agrupa objetos asi que es relevante conocerla.
+Así sería la jerarquía de éstas I. Veremos que de cada una de ellas hay CL que las implementan.
+
+                Collection
+ Set              List            Queue             |          Map
+
+Como todas las colecciones en definitiva tienen el mismo objetivo, es decir almacenar objetos de manera dinámica, es importante
+diferenciar en qué se caracteriza cada tipo de colección para saber cuál elegir al momento de que necesitemos almacenar objetos.
+Antes de adentrarnos en las CL que implementan estas I, veremos las características que tienen estas I para poder hacer un primer
+filtrado para conocer cual I nos puede servir por sus características y recién a partir de ahí ver que clase de esa I elegir.
+
+SET:
+Las colecciones de tipo Set permiten almacenar una colección de elementos NO REPETIDOS -algunas clases los ordenan y otras no.
+
+LIST:
+Las colecciones de tipo List PERMITE ELEMENTOS REPETIDOS y ORDENADOS. Están indexados igual que los arrays, la única diferencia
+es que guardan objetos. Al estar ordenados los elementos podemos acceder al elemento particular que necesitemos. List tiene
+mas funcionalidades que Set pero es menos eficiente en rendimiento.
+
+MAP:
+Las colecciones Map guardan elementos que pueden ser repetidos pero los guarda en formato clave-valor, como un objeto de
+javascript. Las claves son únicas, el valor, que será un objeto, puede repetirse.
+
+QUEUE:
+Las colecciones de este tipo no permiten el acceso a cualquier elemento,  los elementos se agregan al final y se eliminan
+desde el principio. Solo puedes acceder y manipular el elemento más antiguo (el primero en entrar).
+Literalmente como su nombre lo indica hay que imaginárselas como colas o filas, donde la primera persona en llegar es la
+primera en ser atendida y salir. Siguen el principio de "primero en entrar, primero en salir" (FIFO, por sus siglas en inglés).
+En principio no explicaremos las clases que implementan esta I. Quizá en un futuro si.
+
+ANALISIS DE CLASES:
+
+LIST:
+Adentrándonos en el análisis de cada clase de estas interfaces empezaremos por las de la I List. Hay 4 principales:
+    Arraylist        LinkedList          Vector          CopyOnWriteArrayList.
+Se dará una breve explicación de cada una y se profundizará en las 2 primeras que son las más usadas.
+Como se mencionó List permite la ordenación de los elementos y su duplicidad. Es muy buena manipulando sus objetos ya que
+puede acceder a posiciones que elijamos y añadir, modificar o eliminarlos.
+
+ArrayList:
+    Almacena los objetos ordenados de forma adyacente en la memoria. Muy rápidas accediendo -leer- y modificando
+elementos (usando sus metodos get y set), se adapta a muchos escenarios. Lentas para añadir, eliminar y ordenar, esto porque
+al eliminar un elemento, los adyacentes que le sigues se deben correr para no dejar el lugar en memoria vacío. Y si queremos
+añadir en un lugar determinado, en el medio por ej, los que estén subyacentes se tienen que desplazar - cortar y pegar- para
+despejar el lugar que ocupara el elemento agregado.
+ Según la API de java esta clase permite almacenar 10 objetos,  pero en
+realidad lo que hace es al momento de instanciar un ArrayList es reservar en memoria espacio para 10 objetos. Esto podrá generar
+2 problemas: que queramos poner más de 10 elementos o menos de 10 elementos.
+Se analizarán por separado seguidamente:
+Al usar el constructor por defecto de la clase ArrayList, se reserva un espacio en memoria donde se podrán almacenar 10
+elementos, si se mete un elemento más al array, crea una nueva matriz más grande (por ejemplo, duplicando su tamaño actual)
+y copia los elementos existentes de la matriz antigua a la nueva. Esto permite a la lista acomodar más elementos sin tener que
+redimensionar la matriz interna cada vez que se agrega un elemento. Esto consumirá recursos, durante el proceso de
+redimensionamiento, el ArrayList utiliza temporalmente más memoria, ya que mantiene ambas matrices (la antigua y la nueva)
+en memoria hasta que se completa la copia. La antigua matriz (con la capacidad insuficiente) se convierte en candidata para
+la recolección de basura una vez que los elementos se copian a la nueva matriz. Esto asegura que la memoria se gestione de
+manera eficiente y no se desperdicie. Pero el copiado y pegado de un lugar a otro consume recursos.
+Para solventar ésta particularidad podemos indicar de inicio - al crear el ArrayList - cuántos elementos tendrá, así se
+reservará en memoria esa capacidad. Ganará rendimiento y además no perderá la característica de las colecciones de ser
+dinámicas en su crecimiento. Pero si nos excedemos de ese número sucederá el proceso mencionado anteriormente consumiendo
+más recursos de lo usual.
+    Si queremos establecer un numero especifico de elementos podemos:
+a) usar en vez del constructor por defecto, usar otro constructor que recibe un int que sera el tamaño del array.
+b) sobre un array ya creado con constructor vacío -sin especificar tamaño-, usar el método:
+    listaEmpleados.ensureCapacity(12);
+Así se reservara inicialmente en memoria, espacios adicionales.
+    Por otra parte, si tenemos un ArrayList en el que queremos guardar menos de 10 elementos, lo cual generaría que se
+reserve espacio en memoria de sobra, podemos utilizar las 2 herramientas anteriores, o también usar el método trimToSize().
+Éste permite limitar el arrayList para que no se puedan meter mas elementos cortando el exceso de memoria que pudiese
+haber. ej si tenemos un arrayList de 8 elementos, en memoria están guardados los 10 espacios, con esto eliminamos de
+memoria esos 2 lugares sobrantes. Igualmente podemos añadir un elemento mas, pero nos crearía otro array nuevo mas extenso y
+consumiría mas recursos.
+
+LinkedList:
+    Tiene una funcionalidad igual a la de ArrayList en el sentido que como toda List permite duplicados, y por su parte también
+los elementos están ordenados. La diferencia viene dada en su rendimiento, es mejor que ArrayList para unas cosas y peor para
+otras. LinkedList tiene mejor rendimiento para agregar, eliminar y mover sus elementos debido a su funcionamiento interno. En
+cambio, no es tan eficiente para modificar y obtener -leer- elementos.
+Funcionamiento interno: en vez de almacenar de manera subyacente como ArrayList, LinkedList almacena sus elementos en nodos que
+tienen 3 partes, la data, y las 2 referencias que apuntan al elemento anterior y al siguiente. Gracias a estas referencias
+-links- no tienen que estar los datos guardados de manera adyacente en la memoria. Lo que quiere decir que si eliminamos algún
+ elemento no se van a tener que mover los elementos restantes, simplemente se actualizan los links, siendo esto menos costoso
+ en rendimiento que lo que hacen las ArrayList. Lo mismo sucede con mover los elementos, no importa el lugar o posición, sino
+ su referencia.
+
+Vector:
+Esta obsoleta, se usaba en programacion concurremte.
+
+CopyOnWriteArrayList:
+Se usa para programacion concurrente. Es eficiente en operaciones de lectura pero no de escritura.
+
+
+
+SET:
+Como ya se dijo, almacenan elementos NO DUPLICADOS en principio. Y decimos en principio porque esto es así para objetos que vienen
+con java, ya que para los objetos que instanciemos de clases creadas por nosotros sí aceptaría duplicados, para evitar ésto hay
+que realizar algunos pasos que veremos en cada clase que implementa la I. Hay varias clases que implementas esta interface
+-entre otras-:
+    HashSet   LinkedHashSet   TreeSet     EnumSet     CopyOnWriteArraySet     ConcurrentSkipListSet
+
+HashSet:
+    Por implementar SET, no permite duplicados, además, se caracteriza por no tener ordenados sus elementos. No se pueden ordenar
+luego de añadirlos y no permite el acceso aleatorio a los ellos.
+    1) Funcionamiento interno de HashSet:
+    HashSet utiliza una tabla hash para almacenar los elementos. Esta tabla hash se almacena en la memoria heap. Cada celda de
+la tabla hash (llamada "bucket") contiene una lista u (otra estructura de datos que se gestiona de forma automática) de objetos que
+tienen el mismo valor hash. Estas listas manejan colisiones y aseguran que múltiples objetos con el mismo código hash se almacenen
+correctamente.
+    El código hash se utiliza para indexar (determinar en qué celda se almacenará el objeto) y acceder eficientemente a elementos
+almacenados en el montón -memoria Heap-.
+    La tabla hash en sí se almacena en algún lugar de la memoria Heap. Cada entrada en la tabla hash puede contener referencias a
+objetos almacenados en el montón -heap-.
+    La memoria "Stack" puede contener referencias a objetos en la "Heap", y el código hash ayuda a encontrar la ubicación de
+estos objetos en la estructura de datos.
+    2) Por qué no permite duplicados:
+    No permite duplicados porque al momento de agregar elementos, su método add() los filtra. Éste método por dentro utiliza los
+métodos hashCode() y equals() de la clase Object de java. Los objetos de java al heredar de Object también tienen incorporados
+estos métodos. Cuando se agrega un elemento, la implementación calcula el código hash del objeto y busca si ya existe un
+elemento con el mismo código hash. Si existen colisiones (mismo código hash), se utiliza equals() para verificar si los objetos
+son iguales (si tienen las mismas propiedades y valores).
+    Pero el filtro tiene un limite, y es que es aplicable solo a los objetos que vienen con java (String, Date, Integer, etc). Para
+los objetos que instanciemos de clases creadas por nosotros, el método add() no los filtrará por si solo, veremos como solucionar
+esto a continuación.
+    3) Como evitar duplicados de objetos instanciados a partir de clases creadas por nosotros:
+Si en una colección nosotros guardamos objetos de clases creadas por nosotros, equals() no los va a distinguir porque no sabe
+como están construidos, que propiedades tienen. Lo mismo sucede con hashCode(), sirve para clases definidas por java pero no
+para clases definidas por nosotros.
+    Concretamente para evitar elementos repetidos -objetos creados por nosotros- tendremos que sobreescribir los métodos
+equals() y hashCode() dentro de las clases que usamos para instanciar los objetos que vamos a guardar. Esta clase no tiene que
+implementar ninguna I ni heredar de ninguna clase ya que por defecto ya hereda de Object y así también estos métodos, que solo
+deberemos sobreescribir.
+Como es muy común sobreescribir estos métodos, los editores de código nos dan la opción de sobreescribirlo por nosotros.
+Si sobreescribimos 1 hay que sobreescribir el otro.
+    Cuando se sobreescribe haschode() suele retornar un número de 2 cifras para simplificar el código hash que suele tener muchas
+cifras.
+Al sobreescribir equals vamos a tener que tener en cuenta que parámetro será el que diferencie a los objetos (El
+editor nos lo hace elegir).
+¿Y SI LA CLASE ES DE UN TERCERO?
+
+TreeSet:
+    Por implementar la I Set no permite duplicados, al igual que HashSet, la diferencia con éste es que TreeSet si tiene sus elementos
+ordenados de manera ascendente gracias a su comparador(). Además su estructura interna es de árbol. No permiten el acceso aleatorio
+a los elementos. No se puede acceder a cualquier elemento sino que hay que recorrerlos a todos. Tiene poca eficiencia a la hora de
+eliminar y agregar elementos. Es eficiente para buscar -leer- elementos.
+    1) Funcionamiento interno: Cada elemento en el TreeSet se almacena como un nodo en el árbol red-black. Estos nodos contienen
+referencias a sus elementos, nodos hijos (izquierdo y derecho), un puntero al padre y un color que es utilizado para el
+balanceo del árbol. Los elementos se van comparando con su nodo padre y si es menor se coloca a la izquierda y si es mayor a la
+derecha y se les va asignando un color a grandes rasgos. Lo importante es que cuando se inserta o elimina un elemento, el TreeSet
+realiza reorganizaciones en el árbol para mantener estas propiedades, por eso es lento para agregar y eliminar.
+    2) Evitar duplicados: Al igual que sucede con HashSet los duplicados se evitan de forma automática para los objetos que vienen
+con java, esto porque los mismos implementan la I Comparable que tiene un método compareTo(), que dependiendo del tipo de dato que
+almacene el objeto, será el orden que establezca. Ej: si en el TreeSet guardamos objetos de tipo String, como dentro guardara
+caracteres los ordenara de forma alfabética, si guardamos objetos Integer, que dentro tienen int, los guardara de menor a mayor.
+TreeSet usa automáticamente el método compareTo() para ordenar y comparar sin que nosotros le indiquemos nada.
+    3) Pero en el caso de objetos instanciados a partir de clases creadas por nosotros o un tercero, no los detectará como duplicados
+automáticamente ya que éstos pueden tener varias propiedades con distintos tipos de dato y no vamos a tener en principio el método
+compareTo(). Y acá hay que distinguir 2 casos:
+    3) a_ Objeto es instanciado a partir de una clase creada por nosotros:
+    Tenemos 2 opciones, la primera es que esa clase a partir de la cual instanciamos objetos, implemente la I comparable y sobreescriba
+el método CompareTo(), la segunda, crear una clase externa que implemente la I comparator y sobreescriba compare(). Ésta segunda opción
+también nos permitirá solucionar el problema de las clases que no son creadas por nosotros y en las cuales no podemos hacer que ellas
+implementen la I Comparable. La misma se verá en el siguiente apartado. A continuación veremos como aplicar la primera opción.
+En la clase creada por nosotros deberemos implementar la I Comparable y sobreescribir el método CompareTo() con el criterio de
+ordenación que queramos.
+    Si queremos una ordenación numérica le diremos al método que retorne this.propiedadNumérica - o.propiedadNumérica; ya que lo
+que va a comparar es la propiedad del objeto instanciado (referenciado con this) con la propiedad del objeto pasado por parámetro.
+    Si queremos  comparar por orden alfabético podemos dentro de la sobreescritura del compareTo() usar el método compareTo()
+de los String object.
+    Si queremos comparar fechas, podríamos retornar en el comparaTo() sobreescrito: this.fecha.compareTo(otraFecha.fecha); siendo
+"otraFecha" el objeto pasado por parámetro al compareTo() sobreescrito. Dentro del metodo sobreescrito se estaría aplicando el
+compareTo() de los objetos Date (recordemos que, como String y como todos los objetos java, Date también implementa la I Compare y por
+ende tiene el método compareTo().
+    Para entender mejor estos ejemplos mirar el archivo TreeSet.
+    3) b_ Objeto instanciado a partir de una clase creada por un tercero (que no podemos modificar):
+Como no podemos modificar esa clase como describimos en el paso anterior, tendremos que crear una nueva clase que implemente la I
+Comparator y sobreescribir el método compare(), que a diferencia de compareTo() recibe 2 parámetros -2 objetos de la misma clase-.
+Nos permite crear criterios de ordenación de forma externa (en otra clase). Podemos por ej. crear varias clases que implementen esta
+I y sobreescriban compare() en base a distintos criterios, a esas clases podríamos llamarlas "clases comparadoras" ya que su única
+funcionalidad sería esa. No se puede sobreescribir el método compare más de una vez en la misma clase.
+    Se entenderá mejor en el ejemplo del archivo TreeSetEj y las clases que utiliza ClaseDeTercero y ClaseComparadora.
+    Ambos métodos -compareTo() de la I Comparable y compare() de la I Comparator- nos sirven para comparar 2 objetos y así cumplir una
+doble función: evitar duplicados y ordenar los elementos.
+Particularmente compareTo() se implementa en la propia clase de los objetos que quieres comparar. Está diseñado para comparar el objeto
+en el que se llama (this) con otro objeto que se pasa como argumento. El resultado de la comparación debe ser un valor negativo
+si el objeto actual es menor, cero si son iguales y un valor positivo si el objeto actual es mayor. Específicamente, la
+convención para el método compareTo() es:
+Devolver un número negativo si this es menor que el otro objeto.
+Devolver cero si this es igual al otro objeto.
+Devolver un número positivo si this es mayor que el otro objeto.
+    Compare, por su parte se implementa en una clase separada que actúa como un comparador externo. El método compare() en una clase
+Comparator toma dos objetos como argumentos que deben ser de la misma clase (ya que lo que vamos a comparar es eso, 2 objetos de la
+misma clase, necesita 2 args. porque a diferencia de compareTo() acá no podemos usar this). Y devuelve un valor similar:
+negativo si el primer objeto es menor, cero si son iguales y positivo si el primer objeto es mayor.
+
+
+LinkedHashSet:
+Combina las características de un HashSet y un LinkedList. Un LinkedHashSet mantiene una colección de elementos únicos
+y además mantiene el orden de inserción de esos elementos. Esto significa que puedes iterar a través de los elementos
+en el orden en que fueron agregados.
+    Elementos Únicos: Al igual que otros conjuntos en Java, un LinkedHashSet no permite elementos duplicados. Cada
+elemento en un LinkedHashSet debe ser único. Aquí cabe aplicar lo dicho sobre hashCode() y equals() en HashSet.
+    Orden de Inserción: A diferencia de un HashSet estándar, que no garantiza ningún orden específico de los elementos,
+un LinkedHashSet mantiene el orden en el que se agregaron los elementos. Esto significa que puedes iterar a través
+de los elementos en el orden en que fueron insertados.
+    Implementación Interna: LinkedHashSet se basa en una combinación de un "hash table" (tabla hash) y una lista doblemente enlazada.
+La tabla hash permite un acceso rápido a los elementos y garantiza su unicidad, mientras que la lista doblemente enlazada mantiene
+el orden de inserción.
+    Eficiencia: La eficiencia de búsqueda en un LinkedHashSet es similar a la de un HashSet. La inserción y eliminación de elementos
+son más eficientes que en una ArrayList, pero pueden ser ligeramente más lentas que en un HashSet debido a la gestión adicional de
+la lista enlazada.
+    Uso Común: LinkedHashSet es útil cuando necesitas una colección que almacene elementos únicos y también quieras mantener el orden
+de inserción. Es especialmente útil en escenarios en los que necesitas recordar el orden en que los elementos fueron agregados, como
+ por ejemplo en la construcción de registros o en aplicaciones relacionadas con el historial.
+
+EnumSet:
+La mejor para tipos enumerados.
+
+CopyOnWriteArraySet:
+especifico para concurrencia. eficiente lectura. poco eficiente en escritura y en eliminar.
+
+ConcurrentSkipListSet:
+Específico concurrencia. admite ordenación. Con muchos elementos no es eficiente.
+
+
+
+QUEUE
+Representa una estructura de datos de tipo cola, que es una colección ordenada donde los elementos se agregan al
+final y se eliminan desde el frente (primer elemento en entrar, primer elemento en salir). Proporciona métodos
+específicos para operaciones de encolar y desencolar elementos, es eficiente para agregar y eliminar ya que por
+defecto siempre agrega al final y elimina el primer elemento, no tiene que hacer una búsqueda. No es eficiente para
+búsquedas aleatorias, eliminación aleatoria (con aleatoria referimos a elementos que no sean los primero o últimos).
+Respecto a los elementos duplicados, dependerá de la clase que implemente ésta interfaz.
+    Solo se verá en detalle las ArrayDeque por se la más usada, respecto a las otras solo haremos una breve mención.
+
+Clases que implementan la interfaz Queue:
+ArrayDeque      LinkedBlockingDeque     LinkedList      PriorityQueue   PriorityBlockingQueue
+
+(Como puede verse LinkedList además de implementar la I List implementa Deque que a su vez implementa Queue, compartiendo
+características de las mismas).
+
+LinkedBlockingDeque: usado en programación concurrente.
+PriorityQueue: Para utilizar un Comparator. El primer elemento dependerá de propiedad elegida.
+PriorityBlockingQueue: igual que el anterior pero mas eficiente en programación concurrente.
+
+ArrayDeque:
+ArrayDeque (Deque basado en array) es una implementación eficiente de la interfaz Deque en Java. La interfaz Deque (Double
+Ended Queue) es una extensión de la interfaz Queue que permite operaciones de encolar y desencolar tanto en el frente como
+en el final de la cola. ArrayDeque combina características de una cola y de una pila en una sola estructura de datos.
+Características clave de ArrayDeque:
+    Permite duplicados, por ende da lo mismo si le insertamos objetos java u otros creados a partir de clases nuestras.
+    Doble Final: ArrayDeque permite agregar y eliminar elementos tanto desde el frente como desde el final de la cola. Esto
+lo hace muy versátil y adecuado para casos en los que necesitas una cola de doble extremo.
+    Implementación basada en Array: ArrayDeque utiliza un arreglo dinámico internamente para almacenar los elementos. La
+implementación se expande automáticamente a medida que se agregan más elementos, lo que permite un uso eficiente de la memoria
+y tiempos de acceso relativamente rápidos.
+    Operaciones Eficientes: Tanto las operaciones de encolar como de desencolar son eficientes en ArrayDeque. Las operaciones en
+el frente y en el final tienen una complejidad de tiempo constante O(1), lo que significa que son rápidas y no dependen del
+tamaño de la cola. En estas operaciones es más rápida que LinkedList.
+    Capacidad Ilimitada: Aunque ArrayDeque se basa en un arreglo, puede expandirse dinámicamente según sea necesario, lo que
+significa que no tiene una capacidad fija. Esto lo hace adecuado para situaciones donde no puedes predecir con exactitud cuántos
+elementos necesitarás almacenar.
+
+
+MAP
+Es una interfaz que no implementa Collection. Es independiente.
+Almacena los objetos en formato clave-valor, donde ambos elementos deben ser objetos. Es por esto que no puede haber duplicados, si se
+agrega una clave existente se sobreescribe el valor. Permite como clave "null" pero solo una vez ya que éstas deben ser únicas, a
+excepción de EnumMap que solo permite claves tipo Enum.
+    Salvo excepciones específicas es menos eficiente comparado a las Collections.
+
+Clases que implementan la interfaz Map:
+HashMap     LinkedHashMap       TreeMap     EnumMap     WeakHashMap     HashTable       CurrentHashMap
+
+HashMap:
+    No ordena sus elementos y no se pueden ordenar.
+    Funcionamiento interno: utiliza una estructura interna de tabla hash para almacenar los pares clave-valor. Esto significa que las
+claves se asignan a índices en la tabla utilizando una función hash. En base a la clave se genera el hash.
+    Cuando creas un HashMap, puedes especificar una capacidad inicial que determina la cantidad de elementos
+que inicialmente puede almacenar el mapa. Esto es útil si tienes una idea aproximada del número de elementos que planeas almacenar
+en el HashMap. Si no proporcionas una capacidad inicial, se usará una capacidad predeterminada (16). Por otro lado, el HashMap tiene
+el factor de carga, que es un valor entre 0 y 1 (representativo de un %) que indica cuánto se debe llenar el HashMap antes de que se
+redimensione automáticamente. El factor de carga se utiliza para calcular el umbral en el que el HashMap crece en tamaño. El valor
+predeterminado del factor de carga en la mayoría de las implementaciones de HashMap en Java es 0.75 (70%). Cuando agregas elementos
+a un HashMap, este almacena los elementos en una tabla hash interna. Cada entrada en la tabla hash corresponde a una combinación de
+clave y valor. Cuando la cantidad de entradas en el HashMap alcanza un cierto umbral calculado en función del factor de carga y la
+capacidad actual, el HashMap automáticamente aumenta su capacidad.
+    Para especificar la cap. inicial y el factor de carga, HashMap tiene un constructor que recibe estos 2 valores como parámetro.
+    Durante el proceso de aumento de capacidad, el HashMap crea una nueva tabla hash con una capacidad mayor (generalmente el doble
+de la capacidad actual) y luego reubica todas las entradas existentes en la nueva tabla hash. Esto se hace para evitar colisiones
+y garantizar un rendimiento óptimo en términos de tiempo de búsqueda. Pero al igual que sucede con las ArrayList, este copiado y
+pegado de elementos relentiza el proceso.
+    (Colisiones: ocurren cuando dos o más elementos distintos tienen el mismo valor de hash y, por lo tanto, se asignan a la misma
+    posición en la tabla hash subyacente. Para manejar esto, en lugar de almacenar un solo elemento en cada posición de la tabla hash,
+se permite que varios elementos se almacenen en la misma posición como una lista enlazada. Las colisiones son un aspecto importante
+del diseño de las tablas hash, ya que pueden afectar el rendimiento y la eficiencia de las operaciones de búsqueda y almacenamiento.
+Cuando hay colisiones y se quiere acceder a un elemento de la tabla hash hay que además de acceder a ese elemento, recorrer la lista
+interna generada por la colisión).
+    Un valor más bajo del factor de carga (por ejemplo, 0.5) significa que el HashMap se redimensionará más temprano, lo que reduce el
+riesgo de colisiones pero usa más memoria. Un valor más alto del factor de carga (por ejemplo, 0.9) reduce la frecuencia de
+redimensionamiento pero aumenta la probabilidad de colisiones. Elegir una capacidad inicial adecuada y un factor de carga apropiado
+depende del uso y los requisitos específicos de tu aplicación.
+    Eficiente acceso y búsqueda: Debido a la estructura de tabla hash (similar a la de HashSet, el acceso a los elementos de un
+HashMap es muy rápido en operaciones de inserción o búsqueda. Sin embargo, el rendimiento puede degradarse si hay
+colisiones. Además puede ser lento para añadir elementos si se añaden más de la capacidad inicial.
+    Respecto a la eliminación: se considera bueno en promedio, pero existen algunas consideraciones a tener en cuenta:
+Mejor Caso: En el mejor caso, cuando no hay colisiones y la clave a eliminar se encuentra en el primer intento, la eliminación es rápida
+ y se realiza en tiempo constante O(1).
+Peor Caso: En el peor caso, cuando hay muchas colisiones y todas las claves colisionan en la misma posición de la tabla hash (colisión
+"catastrófica"), la eliminación puede requerir recorrer una lista vinculada en esa posición, lo que llevaría tiempo O(n), donde n es
+el número de elementos colisionados.
+Caso Promedio: En el caso promedio, el rendimiento de la eliminación tiende a ser bueno debido a la distribución uniforme de las claves
+y la estrategia de rehashing que evita colisiones graves. En estas circunstancias, la eliminación es bastante eficiente.
+    No garantiza orden: A diferencia de algunas otras implementaciones de Map, como LinkedHashMap y TreeMap, un HashMap no garantiza un
+orden específico de las claves y valores. El orden depende de los índices generados por la función hash. No se puede ordenar.
+    Utilidad: es adecuado cuando necesitas una colección de pares clave-valor y la eficiencia de búsqueda es un factor crítico. Es útil
+para almacenar datos en caché, indexar datos y realizar búsquedas rápidas en grandes conjuntos de datos.
+
+LinkedHashMap:
+    Implementa HashMap, se diferencia de éste por que ordena sus elementos por inserción. Permite ordenación. En cuanto a la eficiencia en
+sus operaciones, es igual que HashMap. Es eficiente en lectura, poco eficiente en escritura -inserción-, y respecto a la eliminación
+funciona igual que HashMap.
+    Funcionamiento interno: utiliza una estructura de doble lista enlazada para mantener el orden de inserción. Esto significa que cada
+entrada en el mapa tiene enlaces tanto al elemento anterior como al siguiente, permitiendo un acceso eficiente y una iteración predecible.
+    Es especialmente útil en situaciones en las que el orden es importante y necesitas recorrer los elementos en el mismo orden en que
+se agregaron al mapa. Si necesitas realizar muchas operaciones de eliminación y el rendimiento es crítico en tu caso de uso, es posible
+que desees considerar otras estructuras de datos, como TreeMap.
+
+
+TreeMap:
+    TreeMap es otra implementación de la interfaz Map en Java que se basa en una estructura de árbol balanceado (un árbol rojo-negro)
+para almacenar pares clave-valor, al igual que TreeSet. A diferencia de un HashMap que no garantiza un orden específico, un TreeMap
+mantiene las claves ordenadas en un orden ascendente o según un comparador personalizado.
+     Es eficiente para realizar búsquedas de elementos dentro de un rango específico de claves. Esto es útil cuando necesitas recuperar
+subconjuntos de datos. Poco eficiente en sus otras operaciones. Puede ser menos eficiente que HashMap en inserción y eliminación.
+    Es especialmente útil cuando necesitas mantener las claves ordenadas y realizar operaciones que aprovechen el orden, como buscar
+elementos en un rango específico de claves. Algunos ejemplos de uso incluyen la implementación de diccionarios, sistemas de rangos,
+programación dinámica, entre otros.
+
+
+
+EnumMap:
+    Diseñada para trabajar con calves de tipo Enum. Debido a su naturaleza especializada, EnumMap es altamente eficiente y ofrece un
+rendimiento rápido en comparación con otras implementaciones de Map. Todas las operaciones  son muy rápidas. Los elementos se ordenan.
+    Funcionamiento interno: La eficiencia de EnumMap radica en su implementación interna. Cuando creas una EnumMap, se crea internamente
+un arreglo que almacena los valores asociados a las constantes del tipo enum. Estos valores están indexados por la posición de las
+constantes en el tipo enum. Debido a que las constantes en un enum tienen valores secuenciales, este arreglo tiene un tamaño fijo igual
+al número de constantes en el enum. Cuando insertas o buscas un valor en la EnumMap, la implementación calcula el índice correspondiente
+n° el arreglo utilizando la posición de la constante en el enum. Esto permite que las operaciones de acceso y modificación se realicen en
+tiempo constante O(1), ya que el acceso a un índice específico en un arreglo es una operación muy rápida.
+    Orden basado en la posición en el enum: lo elementos se ordenan según la posición de las constantes en el tipo enum. Esto garantiza
+que los elementos se recorran en el mismo orden en el que están definidos en el enum.
+    No permite claves nulas, ya que solo trabaja con calves tipo Enum.
+
+WeakHashMap: usado para crear elementos que vaya borrando el sistema si no se usan. Muy poco eficiente.
+
+HashTable:obsoleto. usado en concurrencia.
+
+CurrentHashMap: usado en concurrencia. No permite nulos.

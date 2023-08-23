@@ -1,0 +1,28 @@
+En ésta carpeta de "EjemplosColecciones" se verá como se crean cada una y ejemplos de los métodos básicos que se usan
+para añadir, modificar y eliminar elementos, además de cómo recorrerlas. También en los casos de clases que no permiten
+duplicados se verá cómo evitar la duplicidad de objetos creados por nosotoros.
+Cabe aclarar que para las Interfaces que implementan la I Collection, los métodos básicos para añadir y eliminar son iguales:
+add(), remove() y clear(). Salvo algunos casos especiales como las Lsitas en las que se puede eliminar por índice o por
+elemento.
+Por su parte los Maps usan los métodos put(llave,valor), remove(llave), get().
+
+Por otro lado hay una distinción en la manera de recorrer las colecciones y los maps.
+    Las colecciones en general se pueden recorrer con bucles while, for, foreach y además con Iterator() y  las listas con ListIterator() también.
+Pero con los bucles normales no podemos agregar, modificar o eliminar elementos MIENTRAS recorremos las colecciones, para
+esto se usan los 2 últimos (iterator solo puede eliminar y listIterator puede añadir, eliminar y modificar).
+    Sin embargo los MAPS no pueden recorrerse a la vez que se elimina un elemento. Son la excepcion.
+    Las colecciones en su mayoría tienen el metodo Iterator(), y particularmente las listas tmb tienen ListIterator(),
+ambos crean un objeto de tipo Iterator o ListIterator que tiene ciertos metodos para ayudar a recorrer las colecciones.
+    La interfaz Iterator se utiliza para recorrer y eliminar elementos en colecciones como ArrayList, HashSet, TreeSet, etc.
+Solo permite recorridos en una dirección, es decir, solo puedes avanzar a través de la colección.
+Proporciona tres métodos principales: hasNext(), next(), y remove().
+No puede agregar o reemplazar elementos mientras recorres la colección. Solo puedes eliminar elementos utilizando
+el método remove().
+    Es más eficiente en términos de memoria y rendimiento en comparación con ListIterator, entonces si tengo una lista
+y solo quiero eliminar elementos durante la ejecucion del bucle es mejor usar Iterator que ListIterator.
+    La interfaz ListIterator extiende la interfaz Iterator y se utiliza específicamente para recorrer elementos en listas
+ordenadas, como ArrayList y LinkedList.
+Permite recorridos bidireccionales, lo que significa que puedes avanzar y retroceder a través de la colección.
+Proporciona métodos adicionales, como hasPrevious(), previous(), add(), set(), y más.
+Puedes agregar, reemplazar y eliminar elementos mientras recorres la colección utilizando los métodos proporcionados.
+Es más flexible y poderoso, pero puede ser menos eficiente en términos de rendimiento y uso de memoria que Iterator.
