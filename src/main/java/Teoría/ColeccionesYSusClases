@@ -100,7 +100,7 @@ tienen 3 partes, la data, y las 2 referencias que apuntan al elemento anterior y
  su referencia.
 
 Vector:
-Esta obsoleta, se usaba en programacion concurremte.
+Esta obsoleta, se usaba en programacion concurrente.
 
 CopyOnWriteArrayList:
 Se usa para programacion concurrente. Es eficiente en operaciones de lectura pero no de escritura.
@@ -116,7 +116,7 @@ que realizar algunos pasos que veremos en cada clase que implementa la I. Hay va
 
 HashSet:
     Por implementar SET, no permite duplicados, además, se caracteriza por no tener ordenados sus elementos. No se pueden ordenar
-luego de añadirlos y no permite el acceso aleatorio a los ellos.
+luego de añadirlos y no permite el acceso aleatorio a ellos.
     1) Funcionamiento interno de HashSet:
     HashSet utiliza una tabla hash para almacenar los elementos. Esta tabla hash se almacena en la memoria heap. Cada celda de
 la tabla hash (llamada "bucket") contiene una lista u (otra estructura de datos que se gestiona de forma automática) de objetos que
@@ -152,6 +152,7 @@ cifras.
 Al sobreescribir equals vamos a tener que tener en cuenta que parámetro será el que diferencie a los objetos (El
 editor nos lo hace elegir).
 ¿Y SI LA CLASE ES DE UN TERCERO?
+Debería implementar estos metodos también. Si no, no podrán usarse en un set.
 
 TreeSet:
     Por implementar la I Set no permite duplicados, al igual que HashSet, la diferencia con éste es que TreeSet si tiene sus elementos
